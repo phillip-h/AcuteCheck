@@ -10,6 +10,7 @@ public class CommandStep extends ContinuableStep {
     private final String commandLine;
 
     public CommandStep(String commandLine) {
+        if (commandLine == null || commandLine.isBlank()) throw new IllegalArgumentException("Empty commandLine");
         this.commandLine = commandLine;
     }
 
