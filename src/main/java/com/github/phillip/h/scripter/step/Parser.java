@@ -23,6 +23,8 @@ public class Parser {
             return new EchoStep(step.substring(5));
         } else if (step.startsWith("echo")) {
             return new EchoStep("");
+        } else if (step.startsWith("/")) {
+            return new CommandStep(step.substring(1));
         } else {
             throw new IllegalArgumentException(String.format("Failed to parse step '%s'", step));
         }

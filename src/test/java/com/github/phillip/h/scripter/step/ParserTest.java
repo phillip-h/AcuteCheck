@@ -44,5 +44,8 @@ class ParserTest {
         assertThat(parser.parseStep("echo"), is(new EchoStep("")));
         assertThat(parser.parseStep("echo "), is(new EchoStep("")));
         assertThat(parser.parseStep("echo hello, world!"), is(new EchoStep("hello, world!")));
+
+        assertThat(parser.parseStep("/foo"), is(new CommandStep("foo")));
+        assertThat(parser.parseStep("/foo bar baz"), is(new CommandStep("foo bar baz")));
     }
 }
