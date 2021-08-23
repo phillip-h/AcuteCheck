@@ -8,7 +8,7 @@ class EchoStep extends ContinuableStep {
 
     private final String message;
 
-    public EchoStep(String message) {
+    EchoStep(String message) {
         if (message == null) throw new IllegalArgumentException("Null message");
         this.message = message;
     }
