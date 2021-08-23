@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class Parser {
+public class StepParser {
 
     public Step parseSteps(final List<String> steps) {
         if (steps == null) throw new IllegalArgumentException("Null steps list");

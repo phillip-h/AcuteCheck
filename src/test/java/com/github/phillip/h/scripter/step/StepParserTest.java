@@ -12,12 +12,12 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class ParserTest {
+class StepParserTest {
 
     @Test
     @DisplayName("Step lists are parsed correctly")
     void stepListsShouldBeParsedCorrectly() {
-        final Parser parser = new Parser();
+        final StepParser parser = new StepParser();
         assertThrows(IllegalArgumentException.class, () -> parser.parseSteps(null));
         assertThrows(IllegalArgumentException.class, () -> parser.parseSteps(Collections.singletonList("fake step")));
         assertThrows(IllegalArgumentException.class, () -> parser.parseSteps(Arrays.asList("echo foo bar", "not a step")));
@@ -38,7 +38,7 @@ class ParserTest {
     @Test
     @DisplayName("Steps are parsed correctly")
     void stepsShouldBeParsedCorrectly() throws NoSuchMethodException {
-        final var parser = new Parser();
+        final var parser = new StepParser();
         assertThrows(IllegalArgumentException.class, () -> parser.parseStep(null));
         assertThrows(IllegalArgumentException.class, () -> parser.parseStep(""));
         assertThrows(IllegalArgumentException.class, () -> parser.parseStep(" "));
