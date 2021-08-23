@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.*;
@@ -16,7 +17,7 @@ class StepParserTest {
 
     @Test
     @DisplayName("Step lists are parsed correctly")
-    void stepListsShouldBeParsedCorrectly() {
+    void stepListsShouldBeParsedCorrectly() throws NoSuchMethodException {
         final StepParser parser = new StepParser();
         assertThrows(IllegalArgumentException.class, () -> parser.parseSteps(null));
         assertThrows(IllegalArgumentException.class, () -> parser.parseSteps(Collections.singletonList("fake step")));
@@ -32,7 +33,26 @@ class StepParserTest {
         threeSteps.then(new EchoStep("first")).then(new EchoStep("second")).then(new EchoStep("third"));
         assertThat(parser.parseSteps(Arrays.asList("echo first", "echo second", "echo third")), is(threeSteps));
 
-        // TODO test with non-echo steps
+        final Step allSteps = new NullStep();
+        allSteps.then(new EchoStep("Hello, world!"))
+                .then(parser.makeWaitMessage())
+                .then(parser.makeWaitStep())
+                .then(new EchoStep("Foo"))
+                .then(new EchoStep(""))
+                .then(new CommandStep("command arg1 arg2"))
+                .then(parser.makeVerifyMessage())
+                .then(parser.makeVerifyStep())
+                .then(new AssertStep(getClass().getDeclaredMethod("assertTest", CommandSender.class)));
+        final List<String> stepsList = Arrays.asList(
+                "echo Hello, world!",
+                "wait",
+                "echo Foo",
+                "echo",
+                "/command arg1 arg2",
+                "verify",
+                "assertRaw com.github.phillip.h.scripter.step.StepParserTest assertTest"
+        );
+        assertThat(parser.parseSteps(stepsList), is(allSteps));
     }
 
     @Test
@@ -59,7 +79,7 @@ class StepParserTest {
         assertThrows(IllegalArgumentException.class, () -> parser.parseStep("assertRaw com.github.phillip.h.scripter.step fake"));
         assertThrows(IllegalArgumentException.class, () -> parser.parseStep("assertRaw com.github.fake.SomeClass assertTest"));
 
-        assertThat(parser.parseStep("assertRaw com.github.phillip.h.scripter.step.ParserTest assertTest"),
+        assertThat(parser.parseStep("assertRaw com.github.phillip.h.scripter.step.StepParserTest assertTest"),
                 contains(new AssertStep(getClass().getDeclaredMethod("assertTest", CommandSender.class))));
 
         assertThat(parser.parseStep("wait"), contains(parser.makeWaitMessage(), parser.makeWaitStep()));
