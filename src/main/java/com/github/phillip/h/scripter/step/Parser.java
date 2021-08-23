@@ -25,6 +25,13 @@ public class Parser {
             return new EchoStep("");
         } else if (step.startsWith("/")) {
             return new CommandStep(step.substring(1));
+        } else if (step.startsWith("assertRaw")) {
+            if (step.length() < 10) throw new IllegalArgumentException("assertRaw missing arguments");
+            final String[] parts = step.substring(10).split(" ");
+            if (parts.length != 2) {
+                throw new IllegalArgumentException(String.format("Failed to parse assertRaw statement '%s", step));
+            }
+            return new AssertStep(parts[0], parts[1]);
         } else {
             throw new IllegalArgumentException(String.format("Failed to parse step '%s'", step));
         }

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.lang.reflect.Method;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -49,5 +50,29 @@ public class StepTests {
 
         // TODO it would be good to verify that the command was dispatched, but it's
         // TODO done statically..
+    }
+
+    @Test
+    @DisplayName("AssertStep should be correct")
+    void assertStepShouldBeCorrect() throws NoSuchMethodException {
+        assertThrows(IllegalArgumentException.class, () -> new AssertStep(null));
+        assertThrows(IllegalArgumentException.class, () -> new AssertStep(null, null));
+        assertThrows(IllegalArgumentException.class, () -> new AssertStep("com.github.phillip.h.scripter.step.StepTests", null));
+        assertThrows(IllegalArgumentException.class, () -> new AssertStep(null, "assertionTest"));
+
+        final AssertStep assertStep = new AssertStep("com.github.phillip.h.scripter.step.StepTests", "assertionTest");
+
+        final Method method = getClass().getDeclaredMethod("assertionTest", CommandSender.class);
+        final AssertStep fromMethod = new AssertStep(method);
+
+        assertThat(assertStep, is(fromMethod));
+
+        final CommandSender commandSender = Mockito.mock(CommandSender.class);
+        assertStep.doNext(commandSender);
+        Mockito.verify(commandSender).sendMessage("Asserted!");
+    }
+
+    static void assertionTest(final CommandSender sender) {
+        sender.sendMessage("Asserted!");
     }
 }

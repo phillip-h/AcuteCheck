@@ -1,5 +1,6 @@
 package com.github.phillip.h.scripter.step;
 
+import org.bukkit.command.CommandSender;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -33,8 +34,8 @@ class ParserTest {
 
     @Test
     @DisplayName("Steps are parsed correctly")
-    void stepsShouldBeParsedCorrectly() {
-        final Parser parser = new Parser();
+    void stepsShouldBeParsedCorrectly() throws NoSuchMethodException {
+        final var parser = new Parser();
         assertThrows(IllegalArgumentException.class, () -> parser.parseStep(null));
         assertThrows(IllegalArgumentException.class, () -> parser.parseStep(""));
         assertThrows(IllegalArgumentException.class, () -> parser.parseStep(" "));
@@ -47,5 +48,17 @@ class ParserTest {
 
         assertThat(parser.parseStep("/foo"), is(new CommandStep("foo")));
         assertThat(parser.parseStep("/foo bar baz"), is(new CommandStep("foo bar baz")));
+
+        assertThrows(IllegalArgumentException.class, () -> parser.parseStep("assertRaw"));
+        assertThrows(IllegalArgumentException.class, () -> parser.parseStep("assertRaw "));
+        assertThrows(IllegalArgumentException.class, () -> parser.parseStep("assertRaw com.github.phillip.h.scripter.step"));
+        assertThrows(IllegalArgumentException.class, () -> parser.parseStep("assertRaw com.github.phillip.h.scripter.step "));
+        assertThrows(IllegalArgumentException.class, () -> parser.parseStep("assertRaw com.github.phillip.h.scripter.step fake"));
+        assertThrows(IllegalArgumentException.class, () -> parser.parseStep("assertRaw com.github.fake.SomeClass assertTest"));
+
+        assertThat(parser.parseStep("assertRaw com.github.phillip.h.scripter.step.ParserTest assertTest"),
+                is(new AssertStep(getClass().getDeclaredMethod("assertTest", CommandSender.class))));
     }
+
+    static void assertTest(@SuppressWarnings("unused") final CommandSender sender) {}
 }
