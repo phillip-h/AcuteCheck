@@ -75,4 +75,10 @@ public class StepTests {
     static void assertionTest(final CommandSender sender) {
         sender.sendMessage("Asserted!");
     }
+
+    @Test
+    @DisplayName("FailStep should be correct")
+    void failStepShouldBeCorrect() {
+        assertThrows(StepException.class, () -> new FailStep("Failure").doNext(null));
+    }
 }
