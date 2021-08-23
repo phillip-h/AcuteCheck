@@ -18,6 +18,7 @@ public class StepTests {
     @DisplayName("ContinuableStep should be correct")
     void continuableStepShouldBeCorrect() {
         assertThrows(IllegalArgumentException.class, () -> new EchoStep("Hello").then(null));
+        assertThrows(IllegalStateException.class, () -> new EchoStep("Hello").input("foo"));
 
         final CommandSender commandSender = Mockito.mock(CommandSender.class);
         final ContinuableStep step = new EchoStep("Foo");
@@ -26,6 +27,9 @@ public class StepTests {
         assertThat(step.then(next), is(next));
         assertThat(step.next(commandSender), is(Optional.of(next)));
         assertThat(next.next(commandSender), is(Optional.empty()));
+
+        assertThat(step.requiresInput(), is(false));
+        assertThat(next.requiresInput(), is(false));
 
         assertThrows(IllegalStateException.class, () -> step.then(new EchoStep("Baz")));
     }
@@ -80,5 +84,39 @@ public class StepTests {
     @DisplayName("FailStep should be correct")
     void failStepShouldBeCorrect() {
         assertThrows(StepException.class, () -> new FailStep("Failure").doNext(null));
+    }
+
+    @Test
+    @DisplayName("BranchStep should be correct")
+    void branchStepShouldBeCorrect() {
+        assertThrows(IllegalArgumentException.class, () -> new BranchStep(null));
+
+        final CommandSender commandSender = Mockito.mock(CommandSender.class);
+        final BranchStep branchStep = new BranchStep("main");
+        assertThrows(IllegalStateException.class, () -> branchStep.next(commandSender));
+
+        assertThrows(IllegalArgumentException.class, () -> branchStep.input("other"));
+        assertThrows(IllegalArgumentException.class, () -> branchStep.input("another"));
+        assertThrows(IllegalStateException.class, () -> branchStep.next(commandSender));
+
+        final Step otherStep = new EchoStep("other");
+        final Step anotherStep = new EchoStep("another");
+        branchStep.addBranch("other", otherStep);
+
+        assertThrows(IllegalArgumentException.class, () -> branchStep.input("another"));
+        branchStep.input("other");
+
+        assertThat(branchStep.next(commandSender), is(Optional.of(otherStep)));
+
+        branchStep.addBranch("another", anotherStep);
+        branchStep.input("another");
+        assertThat(branchStep.next(commandSender), is(Optional.of(anotherStep)));
+
+        branchStep.input("main");
+        assertThat(branchStep.next(commandSender), is(Optional.empty()));
+
+        final Step mainStep = new EchoStep("main");
+        assertThat(branchStep.then(mainStep), is(mainStep));
+        assertThat(branchStep.next(commandSender), is(Optional.of(mainStep)));
     }
 }

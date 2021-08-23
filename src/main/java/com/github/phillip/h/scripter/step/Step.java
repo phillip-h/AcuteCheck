@@ -10,4 +10,8 @@ public interface Step {
 
     Step then(Step next);
 
+    void input(Object input);
+
+    boolean requiresInput();
+
 }

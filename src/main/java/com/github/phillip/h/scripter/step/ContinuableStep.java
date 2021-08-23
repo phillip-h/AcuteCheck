@@ -26,6 +26,16 @@ abstract class ContinuableStep implements Step {
     }
 
     @Override
+    public void input(Object input) {
+        throw new IllegalStateException("Step does not take input");
+    }
+
+    @Override
+    public boolean requiresInput() {
+        return false;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
