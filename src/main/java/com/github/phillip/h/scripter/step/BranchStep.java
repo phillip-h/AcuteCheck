@@ -4,6 +4,7 @@ import org.bukkit.command.CommandSender;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 class BranchStep implements Step {
@@ -43,5 +44,20 @@ class BranchStep implements Step {
     @Override
     public final boolean requiresInput() {
         return selectedBranch == null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BranchStep that = (BranchStep) o;
+        return Objects.equals(branches, that.branches) &&
+                Objects.equals(primaryBranch, that.primaryBranch) &&
+                Objects.equals(selectedBranch, that.selectedBranch);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(branches, primaryBranch, selectedBranch);
     }
 }
