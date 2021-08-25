@@ -1,13 +1,17 @@
 package com.github.phillip.h.scripter.step;
 
 import com.github.phillip.h.acutelib.util.Checks;
+import com.github.phillip.h.acutelib.util.Pair;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class StepParser {
+
+    private final Map<String, Pair<String, String>> assertAliases;
+
+    public StepParser(Map<String, Pair<String, String>> assertAliases) {
+        this.assertAliases = Objects.requireNonNull(assertAliases, "null assertAliases");
+    }
 
     public Step parseSteps(final List<String> steps) {
         Objects.requireNonNull(steps, "Null steps list");
@@ -41,6 +45,13 @@ public class StepParser {
                 throw new IllegalArgumentException(String.format("Failed to parse assertRaw statement '%s", step));
             }
             return Collections.singletonList(new AssertStep(parts[0], parts[1]));
+        } else if (step.startsWith("assert")) {
+            if (step.length() < 7) throw new IllegalArgumentException("assert missing argument");
+            final String key = step.substring(7);
+            Checks.requireNonEmpty(key, "assert missing argument");
+            final Pair<String, String> alias = assertAliases.get(key);
+            Objects.requireNonNull(alias, String.format("Unknown alias '%s'", key));
+            return Collections.singletonList(new AssertStep(alias.left(), alias.right()));
         } else {
             throw new IllegalArgumentException(String.format("Failed to parse step '%s'", step));
         }
