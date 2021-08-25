@@ -1,0 +1,12 @@
+tests:
+  acutecheck:
+    foo:
+      - echo Hello, world!
+    bar:
+      - echo testing branches...
+      - wait
+      - echo ...and now for `verify`
+      - verify
+      - echo verify passed!
+    bad:
+      - not a real command...

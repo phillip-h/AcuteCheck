@@ -1,0 +1,15 @@
+name: AcuteCheck
+version: ${project.version}
+main: com.github.phillip.h.scripter.AcuteCheck
+api-version: 1.13
+authors: ["dizigma"]
+description: In-game plugin test automation
+commands:
+  acutecheck:
+    description: AcuteCheck parent command
+    usage: /<command> [run]
+    aliases: [ac]
+permissions:
+  acutecheck.*:
+    description: All AcuteCheck permissions
+    default: op
