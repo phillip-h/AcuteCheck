@@ -1,5 +1,6 @@
 package com.github.phillip.h.scripter.step;
 
+import com.github.phillip.h.acutelib.util.Checks;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
@@ -10,7 +11,7 @@ public class CommandStep extends ContinuableStep {
     private final String commandLine;
 
     CommandStep(String commandLine) {
-        if (commandLine == null || commandLine.isBlank()) throw new IllegalArgumentException("Empty commandLine");
+        Checks.requireNonEmpty(commandLine, "Empty commandLine");
         this.commandLine = commandLine;
     }
 

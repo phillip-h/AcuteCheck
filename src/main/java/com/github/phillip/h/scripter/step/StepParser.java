@@ -1,13 +1,16 @@
 package com.github.phillip.h.scripter.step;
 
+import com.github.phillip.h.acutelib.util.Checks;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class StepParser {
 
     public Step parseSteps(final List<String> steps) {
-        if (steps == null) throw new IllegalArgumentException("Null steps list");
+        Objects.requireNonNull(steps, "Null steps list");
         final Step base = new NullStep();
         Step working = base;
         for (final String step : steps) {
@@ -19,7 +22,7 @@ public class StepParser {
     }
 
     List<Step> parseStep(final String step) {
-        if (step == null || step.isBlank()) throw new IllegalArgumentException("Empty step");
+        Checks.requireNonEmpty(step, "Step may not be empty");
 
         if (step.equals("verify")) {
             return Arrays.asList(makeVerifyMessage(), makeVerifyStep());

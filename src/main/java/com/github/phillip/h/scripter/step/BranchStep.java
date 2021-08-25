@@ -14,7 +14,7 @@ class BranchStep implements Step {
     private String selectedBranch;
 
     BranchStep(String primaryBranch) {
-        if (primaryBranch == null) throw new IllegalArgumentException("Null primaryBranch");
+        Objects.requireNonNull(primaryBranch, "Null primaryBranch");
         this.primaryBranch = primaryBranch;
     }
 

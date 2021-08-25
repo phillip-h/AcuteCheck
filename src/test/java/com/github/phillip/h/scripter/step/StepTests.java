@@ -17,7 +17,7 @@ public class StepTests {
     @Test
     @DisplayName("ContinuableStep should be correct")
     void continuableStepShouldBeCorrect() {
-        assertThrows(IllegalArgumentException.class, () -> new EchoStep("Hello").then(null));
+        assertThrows(NullPointerException.class, () -> new EchoStep("Hello").then(null));
         assertThrows(IllegalStateException.class, () -> new EchoStep("Hello").input("foo"));
 
         final CommandSender commandSender = Mockito.mock(CommandSender.class);
@@ -37,7 +37,7 @@ public class StepTests {
     @Test
     @DisplayName("EchoStep should be correct")
     void echoStepShouldBeCorrect() {
-        assertThrows(IllegalArgumentException.class, () -> new EchoStep(null));
+        assertThrows(NullPointerException.class, () -> new EchoStep(null));
 
         final CommandSender commandSender = Mockito.mock(CommandSender.class);
         new EchoStep("hello, world!").doNext(commandSender);
@@ -47,7 +47,7 @@ public class StepTests {
     @Test
     @DisplayName("CommandStep should be correct")
     void commandStepShouldBeCorrect() {
-        assertThrows(IllegalArgumentException.class, () -> new CommandStep(null));
+        assertThrows(NullPointerException.class, () -> new CommandStep(null));
         assertThrows(IllegalArgumentException.class, () -> new CommandStep(""));
         assertThrows(IllegalArgumentException.class, () -> new CommandStep(" "));
         assertThrows(IllegalArgumentException.class, () -> new CommandStep("\n   \t \t \n "));
@@ -59,7 +59,7 @@ public class StepTests {
     @Test
     @DisplayName("AssertStep should be correct")
     void assertStepShouldBeCorrect() throws NoSuchMethodException {
-        assertThrows(IllegalArgumentException.class, () -> new AssertStep(null));
+        assertThrows(NullPointerException.class, () -> new AssertStep(null));
         assertThrows(IllegalArgumentException.class, () -> new AssertStep(null, null));
         assertThrows(IllegalArgumentException.class, () -> new AssertStep("com.github.phillip.h.scripter.step.StepTests", null));
         assertThrows(IllegalArgumentException.class, () -> new AssertStep(null, "assertionTest"));
@@ -89,7 +89,7 @@ public class StepTests {
     @Test
     @DisplayName("BranchStep should be correct")
     void branchStepShouldBeCorrect() {
-        assertThrows(IllegalArgumentException.class, () -> new BranchStep(null));
+        assertThrows(NullPointerException.class, () -> new BranchStep(null));
 
         final CommandSender commandSender = Mockito.mock(CommandSender.class);
         final BranchStep branchStep = new BranchStep("main");

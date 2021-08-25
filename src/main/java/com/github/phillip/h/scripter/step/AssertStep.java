@@ -11,7 +11,7 @@ class AssertStep extends ContinuableStep {
     private final Method assertion;
 
     AssertStep(Method assertion) {
-        if (assertion == null) throw new IllegalArgumentException("Null assertion");
+        Objects.requireNonNull(assertion, "Null assertion");
         this.assertion = assertion;
     }
 

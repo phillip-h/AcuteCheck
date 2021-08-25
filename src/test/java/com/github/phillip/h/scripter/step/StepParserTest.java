@@ -19,7 +19,7 @@ class StepParserTest {
     @DisplayName("Step lists are parsed correctly")
     void stepListsShouldBeParsedCorrectly() throws NoSuchMethodException {
         final StepParser parser = new StepParser();
-        assertThrows(IllegalArgumentException.class, () -> parser.parseSteps(null));
+        assertThrows(NullPointerException.class, () -> parser.parseSteps(null));
         assertThrows(IllegalArgumentException.class, () -> parser.parseSteps(Collections.singletonList("fake step")));
         assertThrows(IllegalArgumentException.class, () -> parser.parseSteps(Arrays.asList("echo foo bar", "not a step")));
 
@@ -59,7 +59,7 @@ class StepParserTest {
     @DisplayName("Steps are parsed correctly")
     void stepsShouldBeParsedCorrectly() throws NoSuchMethodException {
         final var parser = new StepParser();
-        assertThrows(IllegalArgumentException.class, () -> parser.parseStep(null));
+        assertThrows(NullPointerException.class, () -> parser.parseStep(null));
         assertThrows(IllegalArgumentException.class, () -> parser.parseStep(""));
         assertThrows(IllegalArgumentException.class, () -> parser.parseStep(" "));
         assertThrows(IllegalArgumentException.class, () -> parser.parseStep("  \t\t  \t\n"));

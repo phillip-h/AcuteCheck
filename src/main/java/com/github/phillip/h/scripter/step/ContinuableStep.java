@@ -19,8 +19,8 @@ abstract class ContinuableStep implements Step {
 
     @Override
     public final Step then(Step next) {
+        Objects.requireNonNull(next, "Next step cannot be null");
         if (continuation != null) throw new IllegalStateException("Step already has continuation");
-        if (next == null) throw new IllegalArgumentException("Next step cannot be null");
         continuation = next;
         return next;
     }
