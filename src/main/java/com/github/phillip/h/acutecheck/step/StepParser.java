@@ -1,4 +1,4 @@
-package com.github.phillip.h.scripter.step;
+package com.github.phillip.h.acutecheck.step;
 
 import com.github.phillip.h.acutelib.util.Checks;
 import com.github.phillip.h.acutelib.util.Pair;
@@ -58,7 +58,7 @@ public class StepParser {
     }
 
     EchoStep makeWaitMessage() {
-        return new EchoStep("type '/scripter continue' to continue.");
+        return new EchoStep("type '/ac continue' to continue.");
     }
 
     BranchStep makeWaitStep() {
@@ -66,7 +66,7 @@ public class StepParser {
     }
 
     EchoStep makeVerifyMessage() {
-        return new EchoStep("Verify with one of '/scripter yes', '/scripter no', or '/scripter cancel'");
+        return new EchoStep("Verify with one of '/ac yes', '/ac no', or '/ac cancel'");
     }
 
     BranchStep makeVerifyStep() {

@@ -1,4 +1,4 @@
-package com.github.phillip.h.scripter.step;
+package com.github.phillip.h.acutecheck.step;
 
 import com.github.phillip.h.acutelib.util.Checks;
 import org.bukkit.Bukkit;

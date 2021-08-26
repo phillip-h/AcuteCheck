@@ -1,4 +1,4 @@
-package com.github.phillip.h.scripter.step;
+package com.github.phillip.h.acutecheck.step;
 
 import com.github.phillip.h.acutelib.util.Pair;
 import org.bukkit.command.CommandSender;
@@ -19,8 +19,8 @@ class StepParserTest {
 
     @BeforeAll
     static void setup() {
-        aliasesMap.put("alias1", new Pair<>("com.github.phillip.h.scripter.step.StepParserTest", "assertTest"));
-        aliasesMap.put("alias2", new Pair<>("com.github.phillip.h.scripter.step.StepParserTest", "fakeMethod"));
+        aliasesMap.put("alias1", new Pair<>("com.github.phillip.h.acutecheck.step.StepParserTest", "assertTest"));
+        aliasesMap.put("alias2", new Pair<>("com.github.phillip.h.acutecheck.step.StepParserTest", "fakeMethod"));
     }
 
     @Test
@@ -66,7 +66,7 @@ class StepParserTest {
                 "/command arg1 arg2",
                 "assert alias1",
                 "verify",
-                "assertRaw com.github.phillip.h.scripter.step.StepParserTest assertTest"
+                "assertRaw com.github.phillip.h.acutecheck.step.StepParserTest assertTest"
         );
         assertThat(parser.parseSteps(stepsList), is(allSteps));
     }
@@ -90,12 +90,12 @@ class StepParserTest {
 
         assertThrows(IllegalArgumentException.class, () -> parser.parseStep("assertRaw"));
         assertThrows(IllegalArgumentException.class, () -> parser.parseStep("assertRaw "));
-        assertThrows(IllegalArgumentException.class, () -> parser.parseStep("assertRaw com.github.phillip.h.scripter.step"));
-        assertThrows(IllegalArgumentException.class, () -> parser.parseStep("assertRaw com.github.phillip.h.scripter.step "));
-        assertThrows(IllegalArgumentException.class, () -> parser.parseStep("assertRaw com.github.phillip.h.scripter.step fake"));
+        assertThrows(IllegalArgumentException.class, () -> parser.parseStep("assertRaw com.github.phillip.h.acutecheck.step"));
+        assertThrows(IllegalArgumentException.class, () -> parser.parseStep("assertRaw com.github.phillip.h.acutecheck.step "));
+        assertThrows(IllegalArgumentException.class, () -> parser.parseStep("assertRaw com.github.phillip.h.acutecheck.step fake"));
         assertThrows(IllegalArgumentException.class, () -> parser.parseStep("assertRaw com.github.fake.SomeClass assertTest"));
 
-        assertThat(parser.parseStep("assertRaw com.github.phillip.h.scripter.step.StepParserTest assertTest"),
+        assertThat(parser.parseStep("assertRaw com.github.phillip.h.acutecheck.step.StepParserTest assertTest"),
                 contains(new AssertStep(getClass().getDeclaredMethod("assertTest", CommandSender.class))));
 
         assertThrows(IllegalArgumentException.class, () -> parser.parseStep("assert"));
@@ -107,7 +107,7 @@ class StepParserTest {
 
         // Proper alias
         assertThat(parser.parseStep("assert alias1"),
-                   is(parser.parseStep("assertRaw com.github.phillip.h.scripter.step.StepParserTest assertTest")));
+                   is(parser.parseStep("assertRaw com.github.phillip.h.acutecheck.step.StepParserTest assertTest")));
 
         assertThat(parser.parseStep("wait"), contains(parser.makeWaitMessage(), parser.makeWaitStep()));
         assertThat(parser.parseStep("verify"), contains(parser.makeVerifyMessage(), parser.makeVerifyStep()));

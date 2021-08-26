@@ -1,4 +1,4 @@
-package com.github.phillip.h.scripter.step;
+package com.github.phillip.h.acutecheck.step;
 
 import org.bukkit.command.CommandSender;
 import org.junit.jupiter.api.DisplayName;

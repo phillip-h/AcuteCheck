@@ -1,4 +1,4 @@
-package com.github.phillip.h.scripter.step;
+package com.github.phillip.h.acutecheck.step;
 
 public class StepException extends RuntimeException {
 

@@ -1,13 +1,18 @@
-package com.github.phillip.h.scripter;
+package com.github.phillip.h.acutecheck;
 
-import com.github.phillip.h.scripter.step.Step;
-import com.github.phillip.h.scripter.step.StepParser;
+import com.github.phillip.h.acutelib.commands.TabCompletedMultiCommand;
+import com.github.phillip.h.acutecheck.command.InputCommand;
+import com.github.phillip.h.acutecheck.command.ListCommand;
+import com.github.phillip.h.acutecheck.command.RunCommand;
+import com.github.phillip.h.acutecheck.step.Step;
+import com.github.phillip.h.acutecheck.step.StepParser;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class AcuteCheck extends JavaPlugin {
 
@@ -16,6 +21,22 @@ public class AcuteCheck extends JavaPlugin {
     @Override
     public void onEnable() {
         loadTests();
+        configureCommand();
+    }
+
+    private void configureCommand() {
+        final TabCompletedMultiCommand command = new TabCompletedMultiCommand();
+        Objects.requireNonNull(getCommand("acutecheck"), "Command does not exist!").setExecutor(command);
+
+        command.registerGenericSubcommand("list", new ListCommand(tests, "acutecheck.list"));
+
+        final RunCommand runCommand = new RunCommand(tests, "acutecheck.run");
+        command.registerGenericSubcommand("run", runCommand);
+
+        command.registerGenericSubcommand("yes", new InputCommand(runCommand, "yes", "acutecheck.input"));
+        command.registerGenericSubcommand("no", new InputCommand(runCommand, "no", "acutecheck.input"));
+        command.registerGenericSubcommand("continue", new InputCommand(runCommand, "continue", "acutecheck.input"));
+        command.registerGenericSubcommand("cancel", new InputCommand(runCommand, "cancel", "acutecheck.input"));
     }
 
     private void loadTests() {

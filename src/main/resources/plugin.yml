@@ -1,6 +1,6 @@
 name: AcuteCheck
 version: ${project.version}
-main: com.github.phillip.h.scripter.AcuteCheck
+main: com.github.phillip.h.acutecheck.AcuteCheck
 api-version: 1.13
 authors: ["dizigma"]
 description: In-game plugin test automation

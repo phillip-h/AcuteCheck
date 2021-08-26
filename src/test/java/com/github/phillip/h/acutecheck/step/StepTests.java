@@ -1,4 +1,4 @@
-package com.github.phillip.h.scripter.step;
+package com.github.phillip.h.acutecheck.step;
 
 import org.bukkit.command.CommandSender;
 import org.junit.jupiter.api.DisplayName;
@@ -61,10 +61,10 @@ public class StepTests {
     void assertStepShouldBeCorrect() throws NoSuchMethodException {
         assertThrows(NullPointerException.class, () -> new AssertStep(null));
         assertThrows(IllegalArgumentException.class, () -> new AssertStep(null, null));
-        assertThrows(IllegalArgumentException.class, () -> new AssertStep("com.github.phillip.h.scripter.step.StepTests", null));
+        assertThrows(IllegalArgumentException.class, () -> new AssertStep("com.github.phillip.h.acutecheck.step.StepTests", null));
         assertThrows(IllegalArgumentException.class, () -> new AssertStep(null, "assertionTest"));
 
-        final AssertStep assertStep = new AssertStep("com.github.phillip.h.scripter.step.StepTests", "assertionTest");
+        final AssertStep assertStep = new AssertStep("com.github.phillip.h.acutecheck.step.StepTests", "assertionTest");
 
         final Method method = getClass().getDeclaredMethod("assertionTest", CommandSender.class);
         final AssertStep fromMethod = new AssertStep(method);
