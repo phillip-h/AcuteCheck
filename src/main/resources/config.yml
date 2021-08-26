@@ -7,6 +7,10 @@ tests:
       - /ac list acutecheck fake-group
       - echo Were the 'acutecheck' tests listed along with a message that 'fake-group' does not exist?
       - verify
+    help-command-correct:
+      - /ac help
+      - echo Was the help menu displayed correctly?
+      - verify
   acutecheck-test:
     foo:
       - echo Hello, world!

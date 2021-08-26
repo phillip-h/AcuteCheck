@@ -1,5 +1,6 @@
 package com.github.phillip.h.acutecheck;
 
+import com.github.phillip.h.acutecheck.command.HelpCommand;
 import com.github.phillip.h.acutelib.commands.TabCompletedMultiCommand;
 import com.github.phillip.h.acutecheck.command.InputCommand;
 import com.github.phillip.h.acutecheck.command.ListCommand;
@@ -28,6 +29,7 @@ public class AcuteCheck extends JavaPlugin {
         final TabCompletedMultiCommand command = new TabCompletedMultiCommand();
         Objects.requireNonNull(getCommand("acutecheck"), "Command does not exist!").setExecutor(command);
 
+        command.registerGenericSubcommand("help", new HelpCommand("acutecheck.help"));
         command.registerGenericSubcommand("list", new ListCommand(tests, "acutecheck.list"));
 
         final RunCommand runCommand = new RunCommand(tests, "acutecheck.run");

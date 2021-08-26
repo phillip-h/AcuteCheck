@@ -13,3 +13,15 @@ permissions:
   acutecheck.*:
     description: All AcuteCheck permissions
     default: op
+  acutecheck.run:
+    description: Run AcuteCheck tests
+    default: op
+  acutecheck.help:
+    description: See AcuteCheck help
+    default: op
+  acutecheck.list:
+    description: List AcuteCheck tests
+    default: op
+  acutecheck.input:
+    description: Run AcuteCheck input commands (/ac yes, etc)
+    default: true
