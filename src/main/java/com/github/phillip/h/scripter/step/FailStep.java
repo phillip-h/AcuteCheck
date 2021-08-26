@@ -14,4 +14,9 @@ public class FailStep extends ContinuableStep {
     void doNext(CommandSender sender) {
         throw new StepException(message);
     }
+
+    @Override
+    Step copySelf() {
+        return new FailStep(message);
+    }
 }

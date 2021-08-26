@@ -14,4 +14,6 @@ public interface Step {
 
     boolean requiresInput();
 
+    Step copy();
+
 }

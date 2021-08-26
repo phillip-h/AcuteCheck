@@ -47,6 +47,15 @@ class BranchStep implements Step {
     }
 
     @Override
+    public Step copy() {
+        final BranchStep copy = new BranchStep(primaryBranch);
+        for (Map.Entry<String, Step> branch : branches.entrySet()) {
+            copy.branches.put(branch.getKey(), branch.getValue().copy());
+        }
+        return copy;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

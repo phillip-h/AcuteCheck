@@ -6,7 +6,7 @@ import org.bukkit.command.CommandSender;
 
 import java.util.Objects;
 
-public class CommandStep extends ContinuableStep {
+class CommandStep extends ContinuableStep {
 
     private final String commandLine;
 
@@ -18,6 +18,11 @@ public class CommandStep extends ContinuableStep {
     @Override
     void doNext(CommandSender sender) {
         Bukkit.dispatchCommand(sender, commandLine);
+    }
+
+    @Override
+    Step copySelf() {
+        return new CommandStep(commandLine);
     }
 
     @Override

@@ -8,6 +8,11 @@ class NullStep extends ContinuableStep {
     void doNext(CommandSender sender) {}
 
     @Override
+    Step copySelf() {
+        return new NullStep();
+    }
+
+    @Override
     public String toString() {
         return "NullStep{}";
     }

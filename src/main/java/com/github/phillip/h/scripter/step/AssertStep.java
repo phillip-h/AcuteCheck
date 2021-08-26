@@ -35,6 +35,11 @@ class AssertStep extends ContinuableStep {
     }
 
     @Override
+    Step copySelf() {
+        return new AssertStep(assertion);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

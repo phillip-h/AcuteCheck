@@ -11,6 +11,8 @@ abstract class ContinuableStep implements Step {
 
     abstract void doNext(final CommandSender sender);
 
+    abstract Step copySelf();
+
     @Override
     public final Optional<Step> next(CommandSender sender) {
         doNext(sender);
@@ -41,6 +43,13 @@ abstract class ContinuableStep implements Step {
         if (o == null || getClass() != o.getClass()) return false;
         ContinuableStep that = (ContinuableStep) o;
         return Objects.equals(continuation, that.continuation);
+    }
+
+    @Override
+    public final Step copy() {
+        final Step copy = copySelf();
+        if (continuation != null) copy.then(continuation.copy());
+        return copy;
     }
 
     @Override

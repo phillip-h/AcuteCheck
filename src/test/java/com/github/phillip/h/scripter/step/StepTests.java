@@ -119,4 +119,35 @@ public class StepTests {
         assertThat(branchStep.then(mainStep), is(mainStep));
         assertThat(branchStep.next(commandSender), is(Optional.of(mainStep)));
     }
+
+    @Test
+    @DisplayName("copy() implementations should be correct")
+    void copyImplementationsShouldBeCorrect() throws NoSuchMethodException {
+        final AssertStep assertStep = new AssertStep(getClass().getDeclaredMethod("assertionTest", CommandSender.class));
+        final EchoStep echoStep = new EchoStep("Hello, world!");
+        final BranchStep branchStep = new BranchStep("main");
+        branchStep.then(assertStep);
+        branchStep.addBranch("other", echoStep);
+        final CommandStep commandStep = new CommandStep("foo bar");
+        final FailStep failStep = new FailStep("failed!");
+        final NullStep nullStep = new NullStep();
+
+        assertThat(assertStep.copy(), is(assertStep));
+        assertThat(echoStep.copy(), is(echoStep));
+        assertThat(branchStep.copy(), is(branchStep));
+        assertThat(commandStep.copy(), is(commandStep));
+        assertThat(failStep.copy(), is(failStep));
+        assertThat(nullStep.copy(), is(nullStep));
+
+        assertThat("Copy is not referentially equal", assertStep.copy() != assertStep);
+        assertThat("Copy is not referentially equal", echoStep.copy() != echoStep);
+        assertThat("Copy is not referentially equal", branchStep.copy() != branchStep);
+        assertThat("Copy is not referentially equal", commandStep.copy() != commandStep);
+        assertThat("Copy is not referentially equal", failStep.copy() != failStep);
+        assertThat("Copy is not referentially equal", nullStep.copy() != nullStep);
+
+        // Test on a ContinuableStep with continuation
+        nullStep.then(failStep).then(commandStep).then(branchStep);
+        assertThat(nullStep.copy(), is(nullStep));
+    }
 }
