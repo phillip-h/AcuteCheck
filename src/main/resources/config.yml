@@ -1,5 +1,13 @@
 tests:
   acutecheck:
+    list-command-correct:
+      - /ac list
+      - echo Was the list of test groups displayed?
+      - verify
+      - /ac list acutecheck fake-group
+      - echo Were the 'acutecheck' tests listed along with a message that 'fake-group' does not exist?
+      - verify
+  acutecheck-test:
     foo:
       - echo Hello, world!
     bar:
