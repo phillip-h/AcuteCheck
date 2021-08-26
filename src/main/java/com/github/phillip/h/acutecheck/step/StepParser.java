@@ -58,11 +58,13 @@ public class StepParser {
     }
 
     EchoStep makeWaitMessage() {
-        return new EchoStep("type '/ac continue' to continue.");
+        return new EchoStep("type '/ac continue' to continue or '/ac cancel' to cancel.");
     }
 
     BranchStep makeWaitStep() {
-        return new BranchStep("continue");
+        final BranchStep wait = new BranchStep("continue");
+        wait.addBranch("cancel", new NullStep());
+        return wait;
     }
 
     EchoStep makeVerifyMessage() {
