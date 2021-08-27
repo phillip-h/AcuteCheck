@@ -2,10 +2,7 @@ package com.github.phillip.h.acutecheck.step;
 
 import org.bukkit.command.CommandSender;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 class BranchStep implements Step {
 
@@ -37,7 +34,9 @@ class BranchStep implements Step {
     @Override
     public final void input(Object input) {
         if (!(input instanceof String)) throw new IllegalArgumentException("Input is not a string");
-        if (!primaryBranch.equals(input) && !branches.containsKey(input)) throw new IllegalArgumentException("Input is not a known branch");
+        if (!primaryBranch.equals(input) && !branches.containsKey(input)) {
+            throw new IllegalArgumentException("Input '" + input + "' " + "is not a known branch");
+        }
         selectedBranch = (String) input;
     }
 
@@ -78,4 +77,12 @@ class BranchStep implements Step {
         return Objects.hash(branches, primaryBranch, selectedBranch);
     }
 
+    @Override
+    public String toString() {
+        return "BranchStep{" +
+                "branches=" + branches +
+                ", primaryBranch='" + primaryBranch + '\'' +
+                ", selectedBranch='" + selectedBranch + '\'' +
+                '}';
+    }
 }
