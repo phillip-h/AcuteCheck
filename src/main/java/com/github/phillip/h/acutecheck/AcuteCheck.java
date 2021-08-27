@@ -1,6 +1,7 @@
 package com.github.phillip.h.acutecheck;
 
 import com.github.phillip.h.acutecheck.command.HelpCommand;
+import com.github.phillip.h.acutecheck.step.StepParserConfig;
 import com.github.phillip.h.acutelib.commands.TabCompletedMultiCommand;
 import com.github.phillip.h.acutecheck.command.InputCommand;
 import com.github.phillip.h.acutecheck.command.ListCommand;
@@ -15,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import static com.github.phillip.h.acutecheck.step.StepParserConfig.*;
 
 public class AcuteCheck extends JavaPlugin {
 
@@ -36,17 +39,23 @@ public class AcuteCheck extends JavaPlugin {
         final RunCommand runCommand = new RunCommand(tests, "acutecheck.run");
         command.registerGenericSubcommand("run", runCommand);
 
-        command.registerGenericSubcommand("yes", new InputCommand(runCommand, "yes", "acutecheck.input"));
-        command.registerGenericSubcommand("no", new InputCommand(runCommand, "no", "acutecheck.input"));
-        command.registerGenericSubcommand("continue", new InputCommand(runCommand, "continue", "acutecheck.input"));
-        command.registerGenericSubcommand("cancel", new InputCommand(runCommand, "cancel", "acutecheck.input"));
+        command.registerGenericSubcommand("yes", new InputCommand(runCommand, VERIFY_YES_BRANCH, "acutecheck.input"));
+        command.registerGenericSubcommand("no", new InputCommand(runCommand, VERIFY_NO_BRANCH, "acutecheck.input"));
+        command.registerGenericSubcommand("continue", new InputCommand(runCommand, WAIT_CONTINUE_BRANCH, "acutecheck.input"));
+        command.registerGenericSubcommand("cancel", new InputCommand(runCommand, GENERIC_CANCEL_BRANCH, "acutecheck.input"));
     }
 
     private void loadTests(final Map<String, Pair<String, String>> aliasMap) {
         getLogger().info("== Compiling tests ==");
         tests.clear();
 
-        final StepParser parser = new StepParser(aliasMap);
+        final StepParserConfig parserConfig = StepParserConfig
+                .defaultConfig()
+                .withAssertAliases(aliasMap)
+                .withWaitMessage("type '/ac continue' to continue or '/ac cancel' to cancel.")
+                .withVerifyMessage("Verify with one of '/ac yes', '/ac no', or '/ac cancel'");
+
+        final StepParser parser = new StepParser(parserConfig);
 
         int totalTests = 0;
         final MemorySection testsSection = (MemorySection) getConfig().get("tests");

@@ -16,6 +16,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class StepParserTest {
 
     private static final Map<String, Pair<String, String>> aliasesMap = new HashMap<>();
+    private static final StepParserConfig parserConfig = StepParserConfig.defaultConfig()
+                                                                         .withAssertAliases(aliasesMap)
+                                                                         .withWaitMessage("WAIT MESSAGE")
+                                                                         .withVerifyMessage("VERIFY MESSAGE");
 
     @BeforeAll
     static void setup() {
@@ -32,7 +36,7 @@ class StepParserTest {
     @Test
     @DisplayName("Step lists are parsed correctly")
     void stepListsShouldBeParsedCorrectly() throws NoSuchMethodException {
-        final StepParser parser = new StepParser(aliasesMap);
+        final StepParser parser = new StepParser(parserConfig);
         assertThrows(NullPointerException.class, () -> parser.parseSteps(null));
         assertThrows(IllegalArgumentException.class, () -> parser.parseSteps(Collections.singletonList("fake step")));
         assertThrows(IllegalArgumentException.class, () -> parser.parseSteps(Arrays.asList("echo foo bar", "not a step")));
@@ -49,14 +53,14 @@ class StepParserTest {
 
         final Step allSteps = new NullStep();
         allSteps.then(new EchoStep("Hello, world!"))
-                .then(parser.makeWaitMessage())
-                .then(parser.makeWaitStep())
+                .then(new EchoStep("WAIT MESSAGE"))
+                .then(StepParserConfig.makeDefaultWaitStep().get(0))
                 .then(new EchoStep("Foo"))
                 .then(new EchoStep(""))
                 .then(new CommandStep("command arg1 arg2"))
                 .then(new AssertStep(getClass().getDeclaredMethod("assertTest", CommandSender.class)))
-                .then(parser.makeVerifyMessage())
-                .then(parser.makeVerifyStep())
+                .then(new EchoStep("VERIFY MESSAGE"))
+                .then(StepParserConfig.makeDefaultVerifyStep().get(0))
                 .then(new AssertStep(getClass().getDeclaredMethod("assertTest", CommandSender.class)));
         final List<String> stepsList = Arrays.asList(
                 "echo Hello, world!",
@@ -74,7 +78,7 @@ class StepParserTest {
     @Test
     @DisplayName("Steps are parsed correctly")
     void stepsShouldBeParsedCorrectly() throws NoSuchMethodException {
-        final var parser = new StepParser(aliasesMap);
+        final var parser = new StepParser(parserConfig);
         assertThrows(NullPointerException.class, () -> parser.parseStep(null));
         assertThrows(IllegalArgumentException.class, () -> parser.parseStep(""));
         assertThrows(IllegalArgumentException.class, () -> parser.parseStep(" "));
@@ -109,8 +113,8 @@ class StepParserTest {
         assertThat(parser.parseStep("assert alias1"),
                    is(parser.parseStep("assertRaw com.github.phillip.h.acutecheck.step.StepParserTest assertTest")));
 
-        assertThat(parser.parseStep("wait"), contains(parser.makeWaitMessage(), parser.makeWaitStep()));
-        assertThat(parser.parseStep("verify"), contains(parser.makeVerifyMessage(), parser.makeVerifyStep()));
+        assertThat(parser.parseStep("wait"), is(parserConfig.getWaitSupplier().get()));
+        assertThat(parser.parseStep("verify"), is(parserConfig.getVerifySupplier().get()));
     }
 
     static void assertTest(@SuppressWarnings("unused") final CommandSender sender) {}

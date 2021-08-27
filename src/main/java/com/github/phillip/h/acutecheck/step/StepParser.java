@@ -7,10 +7,10 @@ import java.util.*;
 
 public class StepParser {
 
-    private final Map<String, Pair<String, String>> assertAliases;
+    private final StepParserConfig stepParserConfig;
 
-    public StepParser(Map<String, Pair<String, String>> assertAliases) {
-        this.assertAliases = Objects.requireNonNull(assertAliases, "null assertAliases");
+    public StepParser(StepParserConfig stepParserConfig) {
+        this.stepParserConfig = Objects.requireNonNull(stepParserConfig, "null config");
     }
 
     public Step parseSteps(final List<String> steps) {
@@ -29,9 +29,9 @@ public class StepParser {
         Checks.requireNonEmpty(step, "Step may not be empty");
 
         if (step.equals("verify")) {
-            return Arrays.asList(makeVerifyMessage(), makeVerifyStep());
+            return stepParserConfig.getVerifySupplier().get();
         } if (step.equals("wait")) {
-            return Arrays.asList(makeWaitMessage(), makeWaitStep());
+            return stepParserConfig.getWaitSupplier().get();
         } else if (step.startsWith("echo ")) {
             return Collections.singletonList(new EchoStep(step.substring(5)));
         } else if (step.startsWith("echo")) {
@@ -49,33 +49,11 @@ public class StepParser {
             if (step.length() < 7) throw new IllegalArgumentException("assert missing argument");
             final String key = step.substring(7);
             Checks.requireNonEmpty(key, "assert missing argument");
-            final Pair<String, String> alias = assertAliases.get(key);
+            final Pair<String, String> alias = stepParserConfig.getAssertAliases().get(key);
             Objects.requireNonNull(alias, String.format("Unknown alias '%s'", key));
             return Collections.singletonList(new AssertStep(alias.left(), alias.right()));
         } else {
             throw new IllegalArgumentException(String.format("Failed to parse step '%s'", step));
         }
     }
-
-    EchoStep makeWaitMessage() {
-        return new EchoStep("type '/ac continue' to continue or '/ac cancel' to cancel.");
-    }
-
-    BranchStep makeWaitStep() {
-        final BranchStep wait = new BranchStep("continue");
-        wait.addBranch("cancel", new NullStep());
-        return wait;
-    }
-
-    EchoStep makeVerifyMessage() {
-        return new EchoStep("Verify with one of '/ac yes', '/ac no', or '/ac cancel'");
-    }
-
-    BranchStep makeVerifyStep() {
-        final BranchStep verify = new BranchStep("yes");
-        verify.addBranch("no", new FailStep("Verify failed."));
-        verify.addBranch("cancel", new NullStep());
-        return verify;
-    }
-
 }

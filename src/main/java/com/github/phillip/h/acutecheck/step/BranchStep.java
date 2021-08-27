@@ -55,6 +55,14 @@ class BranchStep implements Step {
         return copy;
     }
 
+    Map<String, Step> getBranches() {
+        return branches;
+    }
+
+    String getPrimaryBranch() {
+        return primaryBranch;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -69,4 +77,5 @@ class BranchStep implements Step {
     public int hashCode() {
         return Objects.hash(branches, primaryBranch, selectedBranch);
     }
+
 }
