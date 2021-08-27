@@ -7,6 +7,7 @@ import com.github.phillip.h.acutecheck.command.ListCommand;
 import com.github.phillip.h.acutecheck.command.RunCommand;
 import com.github.phillip.h.acutecheck.step.Step;
 import com.github.phillip.h.acutecheck.step.StepParser;
+import com.github.phillip.h.acutelib.util.Pair;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -21,7 +22,7 @@ public class AcuteCheck extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        loadTests();
+        loadTests(readAliases());
         configureCommand();
     }
 
@@ -41,9 +42,11 @@ public class AcuteCheck extends JavaPlugin {
         command.registerGenericSubcommand("cancel", new InputCommand(runCommand, "cancel", "acutecheck.input"));
     }
 
-    private void loadTests() {
+    private void loadTests(final Map<String, Pair<String, String>> aliasMap) {
         getLogger().info("== Compiling tests ==");
         tests.clear();
+
+        final StepParser parser = new StepParser(aliasMap);
 
         int totalTests = 0;
         final MemorySection testsSection = (MemorySection) getConfig().get("tests");
@@ -56,7 +59,7 @@ public class AcuteCheck extends JavaPlugin {
                 final List<String> steps = testGroupSection.getStringList(test);
 
                 try {
-                    testGroupMap.put(test, new StepParser(new HashMap<>()).parseSteps(steps));
+                    testGroupMap.put(test, parser.parseSteps(steps));
                 } catch (IllegalArgumentException e) {
                     getLogger().warning(String.format("Compilation failed for test '%s:%s': %s",
                                                       testGroup, test, e.getMessage()));
@@ -68,6 +71,18 @@ public class AcuteCheck extends JavaPlugin {
         }
 
         getLogger().info(String.format("Done. %d test(s) loaded", totalTests));
+    }
+
+    private Map<String, Pair<String, String>> readAliases() {
+        final Map<String, Pair<String, String>> aliasMap = new HashMap<>();
+        final MemorySection aliasesSection = (MemorySection) getConfig().get("aliases");
+        for (String alias : aliasesSection.getKeys(false)) {
+            final MemorySection aliasSection = (MemorySection) aliasesSection.get(alias);
+            aliasMap.put(alias, new Pair<>(aliasSection.getString("className"), aliasSection.getString("methodName")));
+        }
+
+        getLogger().info(String.format("Loaded %d alias(es)", aliasMap.size()));
+        return aliasMap;
     }
 
 }

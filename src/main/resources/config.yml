@@ -1,3 +1,8 @@
+aliases:
+  holdingItem:
+    className: com.github.phillip.h.acutecheck.Assertions
+    methodName: holdingItem
+
 tests:
   acutecheck:
     list-command-correct:
@@ -22,3 +27,6 @@ tests:
       - echo verify passed!
     bad:
       - not a real command...
+    alias:
+      - echo using an alias!
+      - assert holdingItem
