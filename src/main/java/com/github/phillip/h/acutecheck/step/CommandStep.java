@@ -1,8 +1,10 @@
 package com.github.phillip.h.acutecheck.step;
 
+import com.github.phillip.h.acutecheck.AcuteCheck;
 import com.github.phillip.h.acutelib.util.Checks;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
 
@@ -17,7 +19,9 @@ class CommandStep extends ContinuableStep {
 
     @Override
     void doNext(CommandSender sender) {
-        Bukkit.dispatchCommand(sender, commandLine);
+        // TODO change this?
+        Bukkit.getScheduler().runTask(JavaPlugin.getPlugin(AcuteCheck.class),
+                () -> Bukkit.dispatchCommand(sender, commandLine));
     }
 
     @Override

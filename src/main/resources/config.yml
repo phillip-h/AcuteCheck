@@ -16,6 +16,27 @@ tests:
       - /ac help
       - echo Was the help menu displayed correctly?
       - verify
+    verify-instruction-correct:
+      - echo Please enter "/ac yes" at the next verify
+      - /ac run acutecheck-helper run-verify
+      - recurse
+      - echo Did verify continue successfully? (If you are are seeing this it did)
+      - verify
+    multi-level-recursion-possible:
+      - echo Please enter "/ac continue"
+      - /ac run acutecheck-helper run-wait-2x
+      - recurse
+      - echo Did the recursion complete successfully? (If you are seeing this it did)
+      - verify
+      # TODO continue to test in this vein...
+  acutecheck-helper:
+    run-verify:
+      - verify
+    run-wait:
+      - wait
+    run-wait-2x:
+      - /ac run acutecheck-helper run-wait
+      - recurse
   acutecheck-test:
     foo:
       - echo Hello, world!
