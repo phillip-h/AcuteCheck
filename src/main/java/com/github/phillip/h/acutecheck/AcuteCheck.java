@@ -36,7 +36,7 @@ public class AcuteCheck extends JavaPlugin {
         command.registerGenericSubcommand("help", new HelpCommand("acutecheck.help"));
         command.registerGenericSubcommand("list", new ListCommand(tests, "acutecheck.list"));
 
-        final RunCommand runCommand = new RunCommand(tests, "acutecheck.run");
+        final RunCommand runCommand = new RunCommand(tests, this, "acutecheck.run");
         command.registerGenericSubcommand("run", runCommand);
 
         command.registerGenericSubcommand("yes", new InputCommand(runCommand, VERIFY_YES_BRANCH, "acutecheck.input"));
