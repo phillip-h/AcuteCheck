@@ -12,6 +12,7 @@ public class StepRunner {
 
     private final CommandSender executor;
     private final Deque<Step> stack = new ArrayDeque<>();
+    private final int stackSize = 64;
 
     private final ReentrantLock lock = new ReentrantLock();
 
@@ -22,6 +23,7 @@ public class StepRunner {
     public void run(final Step step) {
         lock.lock();
         Objects.requireNonNull(step, "null step");
+        throwIfStackOverflow(1);
         stack.push(step);
         runUntilInputNeeded();
         lock.unlock();
@@ -29,9 +31,16 @@ public class StepRunner {
 
     public void enqueueAll(final List<Step> steps) {
         lock.lock();
+        throwIfStackOverflow(steps.size());
         steps.forEach(stack::push);
         runUntilInputNeeded();
         lock.unlock();
+    }
+
+    private void throwIfStackOverflow(int addition) {
+        if (stack.size() + addition >= stackSize) {
+            throw new IllegalStateException("StepRunner stack overflow");
+        }
     }
 
     public boolean executing() {
