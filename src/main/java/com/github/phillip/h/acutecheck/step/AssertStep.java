@@ -29,8 +29,10 @@ class AssertStep extends ContinuableStep {
     void doNext(CommandSender sender) {
         try {
             assertion.invoke(null, sender);
-        } catch (IllegalAccessException | InvocationTargetException e) {
+        } catch (IllegalAccessException e) {
             throw new StepException("Assertion failed", e);
+        } catch (InvocationTargetException e) {
+            throw new StepException("Assertion failed", e.getTargetException());
         }
     }
 
