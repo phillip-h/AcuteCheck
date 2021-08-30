@@ -25,6 +25,9 @@ public class AcuteCheck extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        saveDefaultConfig();
+        getConfig().options().copyDefaults(true);
+        getLogger().info("Config version: " + getConfig().getString("version"));
         loadTests(readAliases());
         configureCommand();
     }
