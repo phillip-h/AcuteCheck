@@ -2,6 +2,7 @@ package com.github.phillip.h.acutecheck.step;
 
 import com.github.phillip.h.acutelib.util.Checks;
 import com.github.phillip.h.acutelib.util.Pair;
+import org.bukkit.plugin.Plugin;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -22,10 +23,14 @@ public class StepParserConfig {
 
     private Map<String, Pair<String, String>> assertAliases = new HashMap<>();
 
-    private StepParserConfig() {}
+    private final Plugin plugin;
 
-    public static StepParserConfig defaultConfig() {
-        return new StepParserConfig();
+    private StepParserConfig(final Plugin plugin) {
+        this.plugin = Objects.requireNonNull(plugin);
+    }
+
+    public static StepParserConfig defaultConfig(final Plugin plugin) {
+        return new StepParserConfig(plugin);
     }
 
     public static List<Step> makeDefaultVerifyStep() {
@@ -90,5 +95,9 @@ public class StepParserConfig {
 
     public Map<String, Pair<String, String>> getAssertAliases() {
         return assertAliases;
+    }
+
+    public Plugin getPlugin() {
+        return plugin;
     }
 }

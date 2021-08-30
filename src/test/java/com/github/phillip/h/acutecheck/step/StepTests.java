@@ -1,6 +1,7 @@
 package com.github.phillip.h.acutecheck.step;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.Plugin;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -48,10 +49,12 @@ public class StepTests {
     @Test
     @DisplayName("CommandStep should be correct")
     void commandStepShouldBeCorrect() {
-        assertThrows(NullPointerException.class, () -> new CommandStep(null));
-        assertThrows(IllegalArgumentException.class, () -> new CommandStep(""));
-        assertThrows(IllegalArgumentException.class, () -> new CommandStep(" "));
-        assertThrows(IllegalArgumentException.class, () -> new CommandStep("\n   \t \t \n "));
+        final Plugin plugin = Mockito.mock(Plugin.class);
+        assertThrows(NullPointerException.class, () -> new CommandStep(null, null));
+        assertThrows(NullPointerException.class, () -> new CommandStep("/foo", null));
+        assertThrows(IllegalArgumentException.class, () -> new CommandStep("", plugin));
+        assertThrows(IllegalArgumentException.class, () -> new CommandStep(" ", plugin));
+        assertThrows(IllegalArgumentException.class, () -> new CommandStep("\n   \t \t \n ", plugin));
 
         // TODO it would be good to verify that the command was dispatched, but it's
         // TODO done statically..
@@ -141,7 +144,7 @@ public class StepTests {
         final BranchStep branchStep = new BranchStep("main");
         branchStep.then(assertStep);
         branchStep.addBranch("other", echoStep);
-        final CommandStep commandStep = new CommandStep("foo bar");
+        final CommandStep commandStep = new CommandStep("foo bar", Mockito.mock(Plugin.class));
         final FailStep failStep = new FailStep("failed!");
         final NullStep nullStep = new NullStep();
 

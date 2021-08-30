@@ -55,7 +55,7 @@ public class AcuteCheck extends JavaPlugin {
         tests.clear();
 
         final StepParserConfig parserConfig = StepParserConfig
-                .defaultConfig()
+                .defaultConfig(this)
                 .withAssertAliases(aliasMap)
                 .withWaitMessage("type '/ac continue' to continue or '/ac cancel' to cancel.")
                 .withVerifyMessage("Verify with one of '/ac yes', '/ac no', or '/ac cancel'");

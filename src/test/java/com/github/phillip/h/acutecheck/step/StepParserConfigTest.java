@@ -1,7 +1,9 @@
 package com.github.phillip.h.acutecheck.step;
 
+import org.bukkit.plugin.Plugin;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.*;
@@ -14,9 +16,11 @@ class StepParserConfigTest {
     @Test
     @DisplayName("Default config should be correct")
     void defaultConfigCorrect() {
-        assertThat(StepParserConfig.defaultConfig().getVerifySupplier().get(), is(StepParserConfig.makeDefaultVerifyStep()));
-        assertThat(StepParserConfig.defaultConfig().getWaitSupplier().get(), is(StepParserConfig.makeDefaultWaitStep()));
-        assertThat(StepParserConfig.defaultConfig().getAssertAliases().size(), is(0));
+        final Plugin plugin = Mockito.mock(Plugin.class);
+        assertThrows(NullPointerException.class, () -> StepParserConfig.defaultConfig(null));
+        assertThat(StepParserConfig.defaultConfig(plugin).getVerifySupplier().get(), is(StepParserConfig.makeDefaultVerifyStep()));
+        assertThat(StepParserConfig.defaultConfig(plugin).getWaitSupplier().get(), is(StepParserConfig.makeDefaultWaitStep()));
+        assertThat(StepParserConfig.defaultConfig(plugin).getAssertAliases().size(), is(0));
     }
 
     @Test
@@ -45,22 +49,24 @@ class StepParserConfigTest {
     @Test
     @DisplayName("Object should not accept null")
     void objectShouldNotAcceptNull() {
-        assertThrows(NullPointerException.class, () -> StepParserConfig.defaultConfig().withVerifySupplier(null));
-        assertThrows(NullPointerException.class, () -> StepParserConfig.defaultConfig().withWaitSupplier(null));
-        assertThrows(NullPointerException.class, () -> StepParserConfig.defaultConfig().withAssertAliases(null));
+        final Plugin plugin = Mockito.mock(Plugin.class);
+        assertThrows(NullPointerException.class, () -> StepParserConfig.defaultConfig(plugin).withVerifySupplier(null));
+        assertThrows(NullPointerException.class, () -> StepParserConfig.defaultConfig(plugin).withWaitSupplier(null));
+        assertThrows(NullPointerException.class, () -> StepParserConfig.defaultConfig(plugin).withAssertAliases(null));
     }
 
     @Test
     @DisplayName("Message methods should be correct")
     void messageMethodsShouldBeCorrect() {
-        assertThrows(NullPointerException.class, () -> StepParserConfig.defaultConfig().withWaitMessage(null));
-        assertThrows(IllegalArgumentException.class, () -> StepParserConfig.defaultConfig().withWaitMessage(""));
-        assertThrows(IllegalArgumentException.class, () -> StepParserConfig.defaultConfig().withWaitMessage("  \t \n"));
-        assertThrows(NullPointerException.class, () -> StepParserConfig.defaultConfig().withVerifyMessage(null));
-        assertThrows(IllegalArgumentException.class, () -> StepParserConfig.defaultConfig().withVerifyMessage(""));
-        assertThrows(IllegalArgumentException.class, () -> StepParserConfig.defaultConfig().withVerifyMessage("  \t \n"));
+        final Plugin plugin = Mockito.mock(Plugin.class);
+        assertThrows(NullPointerException.class, () -> StepParserConfig.defaultConfig(plugin).withWaitMessage(null));
+        assertThrows(IllegalArgumentException.class, () -> StepParserConfig.defaultConfig(plugin).withWaitMessage(""));
+        assertThrows(IllegalArgumentException.class, () -> StepParserConfig.defaultConfig(plugin).withWaitMessage("  \t \n"));
+        assertThrows(NullPointerException.class, () -> StepParserConfig.defaultConfig(plugin).withVerifyMessage(null));
+        assertThrows(IllegalArgumentException.class, () -> StepParserConfig.defaultConfig(plugin).withVerifyMessage(""));
+        assertThrows(IllegalArgumentException.class, () -> StepParserConfig.defaultConfig(plugin).withVerifyMessage("  \t \n"));
 
-        final StepParserConfig config = StepParserConfig.defaultConfig()
+        final StepParserConfig config = StepParserConfig.defaultConfig(plugin)
                                                         .withVerifyMessage("MESSAGE FOR VERIFY")
                                                         .withWaitMessage("MESSAGE FOR WAIT");
         assertThat(config.getWaitSupplier().get(), contains(

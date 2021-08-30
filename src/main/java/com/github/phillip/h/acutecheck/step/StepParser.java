@@ -37,7 +37,7 @@ public class StepParser {
         } else if (step.startsWith("echo")) {
             return Collections.singletonList(new EchoStep(""));
         } else if (step.startsWith("/")) {
-            return Collections.singletonList(new CommandStep(step.substring(1)));
+            return Collections.singletonList(new CommandStep(step.substring(1), stepParserConfig.getPlugin()));
         } else if (step.startsWith("assertRaw")) {
             if (step.length() < 10) throw new IllegalArgumentException("assertRaw missing arguments");
             final String[] parts = step.substring(10).split(" ");

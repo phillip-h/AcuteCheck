@@ -2,9 +2,11 @@ package com.github.phillip.h.acutecheck.step;
 
 import com.github.phillip.h.acutelib.util.Pair;
 import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.Plugin;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.util.*;
 
@@ -16,7 +18,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class StepParserTest {
 
     private static final Map<String, Pair<String, String>> aliasesMap = new HashMap<>();
-    private static final StepParserConfig parserConfig = StepParserConfig.defaultConfig()
+    private static final Plugin plugin = Mockito.mock(Plugin.class);
+    private static final StepParserConfig parserConfig = StepParserConfig.defaultConfig(plugin)
                                                                          .withAssertAliases(aliasesMap)
                                                                          .withWaitMessage("WAIT MESSAGE")
                                                                          .withVerifyMessage("VERIFY MESSAGE");
@@ -57,7 +60,7 @@ class StepParserTest {
                 .then(StepParserConfig.makeDefaultWaitStep().get(0))
                 .then(new EchoStep("Foo"))
                 .then(new EchoStep(""))
-                .then(new CommandStep("command arg1 arg2"))
+                .then(new CommandStep("command arg1 arg2", plugin))
                 .then(new AssertStep(getClass().getDeclaredMethod("assertTest", CommandSender.class)))
                 .then(new EchoStep("VERIFY MESSAGE"))
                 .then(StepParserConfig.makeDefaultVerifyStep().get(0))
@@ -89,8 +92,8 @@ class StepParserTest {
         assertThat(parser.parseStep("echo "), contains(new EchoStep("")));
         assertThat(parser.parseStep("echo hello, world!"), contains(new EchoStep("hello, world!")));
 
-        assertThat(parser.parseStep("/foo"), contains(new CommandStep("foo")));
-        assertThat(parser.parseStep("/foo bar baz"), contains(new CommandStep("foo bar baz")));
+        assertThat(parser.parseStep("/foo"), contains(new CommandStep("foo", plugin)));
+        assertThat(parser.parseStep("/foo bar baz"), contains(new CommandStep("foo bar baz", plugin)));
 
         assertThrows(IllegalArgumentException.class, () -> parser.parseStep("assertRaw"));
         assertThrows(IllegalArgumentException.class, () -> parser.parseStep("assertRaw "));
