@@ -1,21 +1,16 @@
 package com.github.phillip.h.acutecheck;
 
-import com.github.phillip.h.acutecheck.command.HelpCommand;
+import com.github.phillip.h.acutecheck.command.*;
 import com.github.phillip.h.acutecheck.step.StepParserConfig;
 import com.github.phillip.h.acutelib.commands.TabCompletedMultiCommand;
-import com.github.phillip.h.acutecheck.command.InputCommand;
-import com.github.phillip.h.acutecheck.command.ListCommand;
-import com.github.phillip.h.acutecheck.command.RunCommand;
 import com.github.phillip.h.acutecheck.step.Step;
 import com.github.phillip.h.acutecheck.step.StepParser;
 import com.github.phillip.h.acutelib.util.Pair;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.github.phillip.h.acutecheck.step.StepParserConfig.*;
 
@@ -46,6 +41,13 @@ public class AcuteCheck extends JavaPlugin {
         command.registerGenericSubcommand("no", new InputCommand(runCommand, VERIFY_NO_BRANCH, "acutecheck.input"));
         command.registerGenericSubcommand("continue", new InputCommand(runCommand, WAIT_CONTINUE_BRANCH, "acutecheck.input"));
         command.registerGenericSubcommand("cancel", new InputCommand(runCommand, GENERIC_CANCEL_BRANCH, "acutecheck.input"));
+
+        final ListCompleter listCompleter = new ListCompleter(tests.keySet());
+        command.registerSubcompletion("list", listCompleter);
+        final Map<String, Set<String>> testNames = tests.entrySet()
+                                                        .stream()
+                                                        .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().keySet()));
+        command.registerSubcompletion("run", new RunCompleter(listCompleter, testNames));
     }
 
     private void loadTests(final Map<String, Pair<String, String>> aliasMap) {
