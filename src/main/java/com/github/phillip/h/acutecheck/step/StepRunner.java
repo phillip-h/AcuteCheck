@@ -25,10 +25,10 @@ public class StepRunner {
 
     public void run(final List<Step> steps) {
         Checks.requireNonEmpty(steps, "empty steps list");
-        lock.lock();
         if (stack.size() + steps.size() >= stackSize) {
             throw new IllegalStateException("StepRunner stack overflow");
         }
+        lock.lock();
         steps.forEach(stack::push);
         runUntilInputNeeded();
         lock.unlock();
