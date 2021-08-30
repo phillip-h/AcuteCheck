@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.*;
@@ -123,4 +124,23 @@ class StepParserTest {
     }
 
     static void assertTest(@SuppressWarnings("unused") final CommandSender sender) {}
+
+    @Test
+    void prechecksShouldRunCorrectly() {
+        final int[] count = {0};
+        final Consumer<List<String>> counter = l -> count[0] += l.size();
+        final Consumer<List<String>> fail = l -> {throw new IllegalArgumentException("Fail!");};
+
+        final StepParserConfig config = StepParserConfig.defaultConfig(plugin).addPrecheck(counter).addPrecheck(counter);
+        final StepParser parser = new StepParser(config);
+        parser.parseSteps(Arrays.asList("echo", "echo hello"));
+        assertThat(count[0], is(4));
+        count[0] = 0;
+
+        config.addPrecheck(fail);
+        assertThrows(IllegalArgumentException.class, () -> new StepParser(config).parseSteps(Collections.singletonList("echo this will fail...")));
+        // it will fail, but the other prechecks should run first...
+        assertThat(count[0], is(2));
+
+    }
 }

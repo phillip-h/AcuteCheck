@@ -15,6 +15,7 @@ public class StepParser {
 
     public Step parseSteps(final List<String> steps) {
         Objects.requireNonNull(steps, "Null steps list");
+        stepParserConfig.getPrechecks().forEach(pc -> pc.accept(steps));
         final Step base = new NullStep();
         Step working = base;
         for (final String step : steps) {

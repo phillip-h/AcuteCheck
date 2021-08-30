@@ -5,6 +5,7 @@ import com.github.phillip.h.acutelib.util.Pair;
 import org.bukkit.plugin.Plugin;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class StepParserConfig {
@@ -24,6 +25,7 @@ public class StepParserConfig {
     private Map<String, Pair<String, String>> assertAliases = new HashMap<>();
 
     private final Plugin plugin;
+    private final List<Consumer<List<String>>> prechecks = new ArrayList<>();
 
     private StepParserConfig(final Plugin plugin) {
         this.plugin = Objects.requireNonNull(plugin);
@@ -85,6 +87,11 @@ public class StepParserConfig {
         return this;
     }
 
+    public StepParserConfig addPrecheck(final Consumer<List<String>> precheck) {
+        prechecks.add(Objects.requireNonNull(precheck, "null precheck"));
+        return this;
+    }
+
     public Supplier<List<Step>> getVerifySupplier() {
         return verifySupplier;
     }
@@ -99,5 +106,9 @@ public class StepParserConfig {
 
     public Plugin getPlugin() {
         return plugin;
+    }
+
+    public List<Consumer<List<String>>> getPrechecks() {
+        return prechecks;
     }
 }

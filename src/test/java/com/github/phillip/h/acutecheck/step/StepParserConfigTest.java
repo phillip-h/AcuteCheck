@@ -53,6 +53,7 @@ class StepParserConfigTest {
         assertThrows(NullPointerException.class, () -> StepParserConfig.defaultConfig(plugin).withVerifySupplier(null));
         assertThrows(NullPointerException.class, () -> StepParserConfig.defaultConfig(plugin).withWaitSupplier(null));
         assertThrows(NullPointerException.class, () -> StepParserConfig.defaultConfig(plugin).withAssertAliases(null));
+        assertThrows(NullPointerException.class, () -> StepParserConfig.defaultConfig(plugin).addPrecheck(null));
     }
 
     @Test

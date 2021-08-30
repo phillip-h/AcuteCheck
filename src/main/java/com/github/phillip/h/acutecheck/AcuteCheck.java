@@ -56,6 +56,7 @@ public class AcuteCheck extends JavaPlugin {
 
         final StepParserConfig parserConfig = StepParserConfig
                 .defaultConfig(this)
+                .addPrecheck(AcuteCheck::checkForRecursiveInstructions)
                 .withAssertAliases(aliasMap)
                 .withWaitMessage("type '/ac continue' to continue or '/ac cancel' to cancel.")
                 .withVerifyMessage("Verify with one of '/ac yes', '/ac no', or '/ac cancel'");
@@ -97,6 +98,21 @@ public class AcuteCheck extends JavaPlugin {
 
         getLogger().info(String.format("Loaded %d alias(es)", aliasMap.size()));
         return aliasMap;
+    }
+
+    protected static void checkForRecursiveInstructions(final List<String> instructions) {
+        for (int i = 0; i < instructions.size(); i++) {
+            if (instructions.get(i).startsWith("/ac run") || instructions.get(i).startsWith("/acutecheck run")) {
+                if (i == instructions.size() - 1 || !instructions.get(i + 1).equals("recurse")) {
+                    throw new IllegalArgumentException("Recursive acutecheck calls must be followed by `recurse`");
+                }
+            } else if (instructions.get(i).equals("recurse")) {
+                final String prior = i == 0 ? "" : instructions.get(i - 1);
+                if (!prior.startsWith("/ac run") && !prior.startsWith("/acutecheck run")) {
+                    throw new IllegalArgumentException("`recurse` cannot occur without recursive call prior");
+                }
+            }
+        }
     }
 
 }
