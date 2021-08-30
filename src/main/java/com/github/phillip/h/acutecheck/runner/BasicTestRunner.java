@@ -49,7 +49,7 @@ public class BasicTestRunner extends BukkitRunnable {
         realSteps.add(new InputStep(stepRunner, "RECURSE"));
         realSteps.addAll(steps);
         // TODO need to defer this to the worker thread
-        stepRunner.enqueueAll(realSteps);
+        stepRunner.run(realSteps);
     }
 
     private void tryTest(final Runnable action) {

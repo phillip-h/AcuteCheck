@@ -1,11 +1,9 @@
 package com.github.phillip.h.acutecheck.step;
 
+import com.github.phillip.h.acutelib.util.Checks;
 import org.bukkit.command.CommandSender;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class StepRunner {
@@ -21,26 +19,19 @@ public class StepRunner {
     }
 
     public void run(final Step step) {
-        lock.lock();
         Objects.requireNonNull(step, "null step");
-        throwIfStackOverflow(1);
-        stack.push(step);
-        runUntilInputNeeded();
-        lock.unlock();
+        run(Collections.singletonList(step));
     }
 
-    public void enqueueAll(final List<Step> steps) {
+    public void run(final List<Step> steps) {
+        Checks.requireNonEmpty(steps, "empty steps list");
         lock.lock();
-        throwIfStackOverflow(steps.size());
+        if (stack.size() + steps.size() >= stackSize) {
+            throw new IllegalStateException("StepRunner stack overflow");
+        }
         steps.forEach(stack::push);
         runUntilInputNeeded();
         lock.unlock();
-    }
-
-    private void throwIfStackOverflow(int addition) {
-        if (stack.size() + addition >= stackSize) {
-            throw new IllegalStateException("StepRunner stack overflow");
-        }
     }
 
     public boolean executing() {

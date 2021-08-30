@@ -6,6 +6,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.NoSuchElementException;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -17,7 +22,9 @@ public class StepRunnerTest {
         final CommandSender sender = Mockito.mock(CommandSender.class);
 
         assertThrows(NullPointerException.class, () -> new StepRunner(null));
-        assertThrows(NullPointerException.class, () -> new StepRunner(sender).run(null));
+        assertThrows(NullPointerException.class, () -> new StepRunner(sender).run((Step) null));
+        assertThrows(NullPointerException.class, () -> new StepRunner(sender).run((List<Step>) null));
+        assertThrows(NoSuchElementException.class, () -> new StepRunner(sender).run(Collections.emptyList()));
 
         final StepRunner runner = new StepRunner(sender);
         assertThat("Runner should not be executing at first", !runner.executing());
@@ -56,6 +63,11 @@ public class StepRunnerTest {
         assertThat("Runner should be executing while waiting for input", runner.executing());
         runner.input("continue");
         inOrder.verify(sender).sendMessage("done!");
+        Mockito.reset(sender);
+
+        runner.run(Arrays.asList(new EchoStep("first"), new EchoStep("second")));
+        inOrder.verify(sender).sendMessage("second");
+        inOrder.verify(sender).sendMessage("first");
         Mockito.reset(sender);
     }
 
