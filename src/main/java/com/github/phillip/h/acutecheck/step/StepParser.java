@@ -53,7 +53,7 @@ public class StepParser {
             Objects.requireNonNull(alias, String.format("Unknown alias '%s'", key));
             return Collections.singletonList(new AssertStep(alias.left(), alias.right()));
         } else if (step.equals("recurse")) {
-            return Collections.singletonList(new BranchStep("RECURSE"));
+            return Collections.singletonList(new BranchStep(StepParserConfig.RECURSE_BRANCH));
         } else {
             throw new IllegalArgumentException(String.format("Failed to parse step '%s'", step));
         }

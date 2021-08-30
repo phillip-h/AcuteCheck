@@ -1,9 +1,6 @@
 package com.github.phillip.h.acutecheck.runner;
 
-import com.github.phillip.h.acutecheck.step.InputStep;
-import com.github.phillip.h.acutecheck.step.Step;
-import com.github.phillip.h.acutecheck.step.StepException;
-import com.github.phillip.h.acutecheck.step.StepRunner;
+import com.github.phillip.h.acutecheck.step.*;
 import com.github.phillip.h.acutelib.util.Checks;
 import com.github.phillip.h.acutelib.util.Pair;
 import org.bukkit.command.CommandSender;
@@ -46,7 +43,7 @@ public class BasicTestRunner extends BukkitRunnable {
     public void recurse(final List<Step> steps) {
         Checks.requireNonEmpty(steps, "empty steps list");
         final List<Step> realSteps = new ArrayList<>();
-        realSteps.add(new InputStep(stepRunner, "RECURSE"));
+        realSteps.add(new InputStep(stepRunner, StepParserConfig.RECURSE_BRANCH));
         realSteps.addAll(steps);
         // TODO need to defer this to the worker thread
         stepRunner.run(realSteps);

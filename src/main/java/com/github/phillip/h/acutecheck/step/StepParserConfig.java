@@ -15,6 +15,8 @@ public class StepParserConfig {
 
     public static final String GENERIC_CANCEL_BRANCH = "generic_cancel";
 
+    public static final String RECURSE_BRANCH = "RECURSE";
+
     private Supplier<List<Step>> verifySupplier = StepParserConfig::makeDefaultVerifyStep;
     private Supplier<List<Step>> waitSupplier = StepParserConfig::makeDefaultWaitStep;
 
