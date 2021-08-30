@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class StepTests {
@@ -121,6 +122,18 @@ public class StepTests {
     }
 
     @Test
+    @DisplayName("InputStep should be correct")
+    void inputStepShouldBeCorrect() {
+        assertThrows(NullPointerException.class, () -> new InputStep(null, "foo"));
+        assertDoesNotThrow(() -> new InputStep(Mockito.mock(StepRunner.class), null));
+
+        final StepRunner mock = Mockito.mock(StepRunner.class);
+        final InputStep inputStep = new InputStep(mock, "input_object");
+        inputStep.next(Mockito.mock(CommandSender.class));
+        Mockito.verify(mock).input("input_object");
+    }
+
+    @Test
     @DisplayName("copy() implementations should be correct")
     void copyImplementationsShouldBeCorrect() throws NoSuchMethodException {
         final AssertStep assertStep = new AssertStep(getClass().getDeclaredMethod("assertionTest", CommandSender.class));
@@ -149,5 +162,7 @@ public class StepTests {
         // Test on a ContinuableStep with continuation
         nullStep.then(failStep).then(commandStep).then(branchStep);
         assertThat(nullStep.copy(), is(nullStep));
+
+        assertThrows(UnsupportedOperationException.class, () -> new InputStep(new StepRunner(Mockito.mock(CommandSender.class)), "foo").copy());
     }
 }

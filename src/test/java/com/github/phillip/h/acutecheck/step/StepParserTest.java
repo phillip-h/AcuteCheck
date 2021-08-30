@@ -115,6 +115,8 @@ class StepParserTest {
 
         assertThat(parser.parseStep("wait"), is(parserConfig.getWaitSupplier().get()));
         assertThat(parser.parseStep("verify"), is(parserConfig.getVerifySupplier().get()));
+
+        assertThat(parser.parseStep("recurse"), contains(new BranchStep(StepParserConfig.RECURSE_BRANCH)));
     }
 
     static void assertTest(@SuppressWarnings("unused") final CommandSender sender) {}

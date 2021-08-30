@@ -2,13 +2,15 @@ package com.github.phillip.h.acutecheck.step;
 
 import org.bukkit.command.CommandSender;
 
+import java.util.Objects;
+
 public class InputStep extends ContinuableStep {
 
     private final StepRunner runner;
     private final Object input;
 
     public InputStep(StepRunner runner, Object input) {
-        this.runner = runner;
+        this.runner = Objects.requireNonNull(runner, "null runner");
         this.input = input;
     }
 
